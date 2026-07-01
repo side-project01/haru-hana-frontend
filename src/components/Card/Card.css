@@ -1,0 +1,20 @@
+/* 정사각 프리뷰 카드 (Figma 319x319). 좁은 화면에서는 폭에 맞춰 축소. */
+.card {
+  position: relative;
+  width: 100%;
+  max-width: 319px;
+  aspect-ratio: 1 / 1;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+/* 배경 그래픽 — 카드를 채운다. */
+.card__graphic {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+  user-select: none;
+}

@@ -9,6 +9,7 @@
   --on-ink: #ffffff; /* 어두운 배경 위 글자 */
   --dot-active: #393939;
   --dot-idle: #bababa;
+  --toast-bg: rgba(48, 48, 48, 0.4); /* 상단 토스트 배경 (Figma) */
 
   font: 16px/1.5 var(--sans);
   color-scheme: light dark;

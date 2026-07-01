@@ -1,0 +1,29 @@
+/* 상단 중앙 토스트 (Figma: 반투명 검정, radius 12, padding 16/10) */
+.toast {
+  position: fixed;
+  top: 16px;
+  left: 50%;
+  z-index: 100;
+  max-width: 382px;
+  width: calc(100% - 40px);
+  padding: 16px 10px;
+  border-radius: 12px;
+  background: var(--toast-bg);
+  color: var(--on-ink);
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+  transform: translateX(-50%);
+  animation: toast-in 0.24s ease-out;
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -12px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
