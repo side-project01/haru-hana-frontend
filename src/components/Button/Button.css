@@ -1,0 +1,20 @@
+/* 공용 버튼 — 공통 레이아웃/타이포는 base, 색상은 variant */
+.button {
+  width: 100%;
+  padding: 16px 20px;
+  border: none;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.button--primary {
+  background: var(--ink);
+  color: var(--on-ink);
+}
+.button--primary:active {
+  opacity: 0.9;
+}

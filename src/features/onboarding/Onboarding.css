@@ -1,0 +1,88 @@
+/* 모바일 앱 느낌의 풀스크린 컨테이너 (Figma 프레임 402x874)
+   상·하단 앵커는 874 프레임 비율에서 유도(콘텐츠 top 518, 버튼 아래 여백 111). */
+.onboarding {
+  --anchor-top: 59.27dvh; /* 518 / 874 → 콘텐츠(로고) 상단, 슬라이드 간 동일 */
+  --anchor-bottom: 12.7dvh; /* 111 / 874 → 버튼 하단 여백 (Figma 비율) */
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 402px;
+  min-height: 100dvh;
+  margin-inline: auto;
+  padding-top: var(--anchor-top);
+  padding-bottom: var(--anchor-bottom);
+  background: var(--surface);
+  overflow: hidden;
+}
+
+/* 히어로 그래픽 — 노드 중심 기준 절대 배치, 텍스트 뒤에 깔린다 */
+.onboarding__hero {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  z-index: 0;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* 콘텐츠 블록 (로고 + 제목 [+ 부제])
+   상단은 컨테이너 padding-top 으로 고정 앵커 → 로고 위치가 슬라이드 간 동일.
+   부제 유무로 생기는 높이 차이는 아래 푸터의 margin-top:auto 가변 여백이 흡수. */
+.onboarding__content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding-inline: 16px;
+  text-align: center;
+}
+
+.onboarding__title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--ink);
+  white-space: pre-line;
+}
+
+.onboarding__subtitle {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--muted);
+}
+
+/* 하단: 페이지 점 + CTA 버튼
+   margin-top:auto 로 컨테이너 하단에 고정 → 버튼 위치가 슬라이드 간 동일. */
+.onboarding__footer {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  margin-top: auto;
+  padding-inline: 20px;
+}
+
+.onboarding__dots {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.onboarding__dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 138px;
+  background: var(--dot-idle);
+}
+.onboarding__dot.is-active {
+  background: var(--dot-active);
+}

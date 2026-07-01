@@ -1,0 +1,17 @@
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.logo__mark {
+  width: 15px;
+  height: 15px;
+  border-radius: 12px 12px 12px 2px;
+  background: var(--ink-strong);
+}
+.logo__text {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--ink-strong);
+}

@@ -1,5 +1,14 @@
 :root {
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
+  --sans: Pretendard, system-ui, 'Segoe UI', Roboto, sans-serif;
+
+  /* 디자인 토큰 (Figma) */
+  --ink: #191919;
+  --ink-strong: #141414;
+  --muted: #b0b0b0;
+  --surface: #ffffff; /* 기본 배경(면) */
+  --on-ink: #ffffff; /* 어두운 배경 위 글자 */
+  --dot-active: #393939;
+  --dot-idle: #bababa;
 
   font: 16px/1.5 var(--sans);
   color-scheme: light dark;
