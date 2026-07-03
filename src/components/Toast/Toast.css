@@ -1,26 +1,61 @@
-/* 상단 중앙 토스트 (Figma: 반투명 검정, radius 12, padding 16/10) */
+/* 알림 토스트 pill (Figma: 반투명 검정 #303030 40%, radius 12, padding 16/10, gap 10).
+   top(새 질문)·bottom(다운로드 완료) 위치 변형을 공유한다. */
 .toast {
   position: fixed;
-  top: 16px;
   left: 50%;
   z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
   max-width: 382px;
-  width: calc(100% - 40px);
   padding: 16px 10px;
   border-radius: 12px;
   background: var(--toast-bg);
   color: var(--on-ink);
   font-size: 14px;
-  font-weight: 500;
+  line-height: 1;
   text-align: center;
   transform: translateX(-50%);
-  animation: toast-in 0.24s ease-out;
 }
 
-@keyframes toast-in {
+/* 상단(새 질문): 좌우 20px 여백, 위에서 슬라이드 인 */
+.toast--top {
+  top: 16px;
+  width: calc(100% - 40px);
+  font-weight: 500;
+  animation: toast-in-top 0.24s ease-out;
+}
+
+/* 하단(다운로드 완료, Figma iPhone 17-10): 좌우 10px 여백, 세이프에어리어 고려, 아래서 슬라이드 인 */
+.toast--bottom {
+  bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  width: calc(100% - 20px);
+  font-weight: 600; /* Figma SemiBold */
+  animation: toast-in-bottom 0.24s ease-out;
+}
+
+/* 아이콘(체크): 20×20, 텍스트와 세로 중앙 정렬 */
+.toast__icon {
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+@keyframes toast-in-top {
   from {
     opacity: 0;
     transform: translate(-50%, -12px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+@keyframes toast-in-bottom {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 12px);
   }
   to {
     opacity: 1;
