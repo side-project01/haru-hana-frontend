@@ -1,0 +1,115 @@
+/* 화면 #5 타인 답변 보기 — Figma iPhone 17 - 11 (402×874 프레임 기준).
+   위→아래: 상태바 영역 → 타이틀 → 카드 스택 → 안내문구 → 액션(다운로드/내 카드 보기).
+   세로 간격은 874 비율의 dvh로 앵커해 기기 높이에 따라 함께 줄어든다(#3/#4와 동일 전략). */
+.other {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 6.18dvh; /* 54 / 874 — 상태바 영역 (다른 화면과 동일) */
+}
+
+/* 타이틀: Pretendard SemiBold 600 / 14 / line-height 150% / 자간 -2% / 진한 잉크, 2줄 중앙 (Figma). */
+.other__title {
+  position: relative;
+  z-index: 3; /* 발광(glow z1)·앞 카드(z2) 위로 — 문구는 항상 또렷하게 */
+  margin: 0;
+  margin-top: 9.6dvh; /* 84 / 874 — 상태바 ↔ 타이틀 */
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.5;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  text-align: center;
+}
+
+/* 콘텐츠: 카드 스택 + 안내문구 + 액션. */
+.other__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  margin-top: 10.07dvh; /* 88 / 874 — 타이틀 ↔ 카드 */
+}
+
+/* 카드 스택: 앞(검정 CardPreview)을 기준으로 뒤 카드가 위로 삐져나와 겹친다. */
+.other__stack {
+  position: relative;
+  width: 100%;
+  max-width: 319px;
+  margin-inline: auto;
+}
+/* 뒤 카드(밝은 라벤더): 위로 올려 흐리게 → "다른 답변이 더 있다"는 스택 느낌.
+   날짜/질문 첫 줄까지 살짝 비치도록 오프셋(Figma). */
+.other__card-behind {
+  position: absolute;
+  inset: -86px 0 auto 0;
+  opacity: 0.6;
+  z-index: 0;
+}
+/* 흰색 발광(eclipse) — Figma Ellipse 19(349×76, Radial Gradient #FFF→투명).
+   Figma에서 이 타원의 중심은 타이틀 텍스트박스 중심과 일치(≈ frame 201,187)한다.
+   뒤 카드(z0)와 앞 카드(z2) 사이(z1)에 깔려, 타이틀 주변을 밝히며 그 아래 뒤 카드 상단을
+   흰 배경으로 부드럽게 지운다. 앞 카드는 이 위에 얹혀 영향 없음. */
+.other__glow {
+  position: absolute;
+  left: 50%;
+  top: -127px; /* 타이틀 중심에 정렬 (카드 상단 기준 위로) */
+  transform: translateX(-50%);
+  width: 349px;
+  max-width: 100%;
+  height: 76px;
+  z-index: 1;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse closest-side at 50% 50%,
+    #fff 0%,
+    rgba(255, 255, 255, 0.85) 45%,
+    rgba(255, 255, 255, 0) 100%
+  );
+}
+
+/* 앞 카드(타인 답변, 검정)를 발광·뒤 카드 위로. */
+.other__stack > .card {
+  position: relative;
+  z-index: 2;
+}
+
+/* 안내문구: Pretendard 500 / 11 / 흐린 회색, 2줄 중앙 + 앞에 작은 스파클. */
+.other__note {
+  margin: 0;
+  margin-top: 20px; /* 카드 ↔ 안내문구 */
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.6;
+  color: var(--muted);
+  text-align: center;
+}
+.other__note svg {
+  vertical-align: -1px;
+  margin-right: 3px;
+}
+
+/* 액션: 다운로드(primary, 풀폭) + 내 카드 보기(텍스트 링크). 좌우 20 (Figma). */
+.other__actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 0 20px;
+  margin-top: 6dvh; /* ~52 / 874 — 안내문구 ↔ 버튼 */
+}
+
+/* "내 카드 보기": Pretendard 500 / 13 / 흐린 잉크, 밑줄 텍스트 링크. */
+.other__link {
+  padding: 4px;
+  border: none;
+  background: none;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-dim);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}

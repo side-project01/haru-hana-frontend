@@ -4,6 +4,7 @@ import TodayQuestion from './features/question/TodayQuestion'
 import AnswerWrite from './features/answer/AnswerWrite'
 import BackgroundSelect from './features/background/BackgroundSelect'
 import CardResult from './features/result/CardResult'
+import OtherAnswer from './features/others/OtherAnswer'
 import type { Step } from './app/steps'
 import './App.css'
 
@@ -58,7 +59,17 @@ function App() {
           answer={answer || undefined}
           background={background || undefined}
           onBack={() => setStep('background')}
-          // TODO: 타인 답변(5번) 화면 구현 후 연결 / 다운로드는 html2canvas 등으로 추후 연동
+          onViewOthers={() => setStep('others')}
+          // TODO: 다운로드는 html2canvas 등으로 추후 연동
+        />
+      )}
+
+      {step === 'others' && (
+        <OtherAnswer
+          question={question || undefined}
+          background={background || undefined}
+          // TODO: 타인 답변은 API(같은 질문의 무작위 답변 1개) 연동 후 주입 — 지금은 샘플 기본값
+          onViewMyCard={() => setStep('card')}
         />
       )}
     </div>
