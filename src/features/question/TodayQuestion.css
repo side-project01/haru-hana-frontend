@@ -1,6 +1,15 @@
-/* 모바일 앱 프레임 (Figma iPhone 17-3, 402x874) — 공용 프레임은 `.screen`이 담당하고
-   여기서는 요소를 874 기준 비율(dvh)·402 기준 비율(%)로 절대 배치한다.
-   (버튼 하단 여백은 온보딩과 동일 비율) */
+/* 모바일 앱 프레임 (Figma iPhone 17-3, 402x874) — 공용 프레임은 `.screen`(min-height:100dvh).
+   정상 흐름(flex column): 위쪽 간격은 874 비율의 dvh 마진, 카드↔버튼 사이 남는 공간은
+   footer의 margin-top:auto가 흡수하고 padding-top이 최소 간격을 보장한다(절대 안 붙음).
+   카드는 화면 높이와 무관하게 원본 크기 — 그래서 안 들어가면 .screen이 늘어나
+   자연 스크롤로 폴백한다. (온보딩·배경선택과 동일 전략) */
+.today {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 1.4dvh;
+  padding-bottom: 12.7dvh;
+}
 
 /* 로딩/에러 — 중앙 정렬 */
 .today--center {
@@ -19,24 +28,17 @@
   color: var(--muted);
 }
 
-/* 날짜 라벨 (Figma y64 → 64/874) */
+/* 날짜 라벨 — 흐름의 첫 요소(컨테이너 padding-top이 Figma y64 앵커) */
 .today__date {
-  position: absolute;
-  top: 7.32dvh;
-  left: 50%;
-  transform: translateX(-50%);
   margin: 0;
   white-space: nowrap;
   font-size: 14px;
   color: var(--muted);
 }
 
-/* 보조 문구 + 질문 (Figma 힌트 y199 → 199/874, 질문 y232) */
+/* 보조 문구 + 질문 (Figma 힌트 y199) — 날짜와의 간격 118/874 */
 .today__prompt {
-  position: absolute;
-  top: 22.77dvh;
-  left: 50%;
-  transform: translateX(-50%);
+  margin-top: 10dvh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -49,7 +51,7 @@
 .today__hint {
   margin: 0;
   font-size: 14px;
-  line-height: 1.2;
+  line-height: 1;
   color: var(--muted);
 }
 
@@ -58,29 +60,27 @@
   max-width: 274px; /* Figma 질문 폭 274 / 402 ≈ 68% */
   font-size: 20px;
   font-weight: 700;
-  line-height: 1.4;
+  line-height: 1;
   color: var(--ink);
   white-space: pre-line;
 }
 
-/* 카드 프리뷰 (Figma y307 → 307/874, 폭 319/402 ≈ 79.35%) */
+/* 카드 프리뷰 (Figma 폭 319/402 ≈ 79.35%, 정사각) — 질문과의 간격 47/874.
+   크기는 화면 높이와 무관하게 원본 유지(줄이지 않는다 — 안 들어가면 스크롤). */
 .today__card {
-  position: absolute;
-  top: 35.13dvh;
-  left: 50%;
-  transform: translateX(-50%);
+  margin-top: 5.38dvh;
+  flex-shrink: 0;
   display: flex;
   justify-content: center;
   width: 79.35%;
   max-width: 319px;
 }
 
-/* 하단 CTA — 온보딩과 동일 하단 비율 (111 / 874 → 12.7dvh) */
+/* 하단 CTA — margin-top:auto가 남는 공간을 흡수해 바닥에 붙고,
+   padding-top이 카드와의 **최소 간격**을 보장한다(공간이 없어도 안 붙음). */
 .today__footer {
-  position: absolute;
-  bottom: 12.7dvh;
-  left: 50%;
-  transform: translateX(-50%);
   width: 100%;
+  margin-top: auto;
+  padding-top: 36px;
   padding-inline: 20px;
 }
