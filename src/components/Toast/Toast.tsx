@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import type { ReactNode } from 'react'
 import './Toast.css'
 
@@ -18,10 +18,15 @@ interface ToastProps {
  * 마운트 후 duration 뒤 자동으로 onDismiss 를 호출한다.
  */
 function Toast({ message, duration = 2500, onDismiss, position = 'top', icon }: ToastProps) {
+  // onDismiss는 호출부에서 매 렌더 새 함수로 올 수 있어(부모 리렌더 시) 의존성에 두면
+  // 타이머가 계속 리셋된다. ref에 최신 콜백만 담아 두고 타이머는 duration에만 반응시킨다.
+  const onDismissRef = useRef(onDismiss)
+  onDismissRef.current = onDismiss
+
   useEffect(() => {
-    const t = setTimeout(onDismiss, duration)
+    const t = setTimeout(() => onDismissRef.current(), duration)
     return () => clearTimeout(t)
-  }, [duration, onDismiss])
+  }, [duration])
 
   return (
     <div className={`toast toast--${position}`} role="status">
