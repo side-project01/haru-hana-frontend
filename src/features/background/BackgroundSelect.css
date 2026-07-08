@@ -1,37 +1,32 @@
-/* 화면 #3 배경 선택 — Figma iPhone 17 - 19 (874 높이 프레임 기준).
-   공용 프레임은 `.screen`(min-height:100dvh). 요소 크기는 Figma대로 고정(px)하되,
-   상·하단 앵커는 874 비율의 dvh로 잡고 카드↔하단섹션 사이 여백을 가변으로 흡수해
-   기기 높이에 대응한다. (온보딩·오늘의질문과 동일한 방식) */
+/* 화면 #3 배경 선택 — Figma iPhone 17 - 19 (874 프레임 기준, 통째 스케일되는 고정 캔버스).
+   Figma auto-layout 계층을 그대로 옮긴다 — 세로 간격은 전부 Figma 고정 gap(px):
+   프레임(padding-top 54) → Frame75(gap 44: 뒤로가기↔카드그룹) → Frame45(gap 65: 카드↔하단섹션)
+   → Frame74(gap 24: 안내문↔컨트롤) → Frame47(gap 44: 탭/스와치↔버튼).
+   콘텐츠는 위에서부터 흐르고(hug), 하단 ~75px는 홈 인디케이터 영역으로 비운다.
+   (과거 margin-top:auto 가변 여백은 동적 뷰포트용이라 고정 874에선 공백이 과했다 → 고정 gap으로 교체) */
 .bg {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-bottom: 20px;
+  gap: 44px; /* Frame 75: 뒤로가기 ↔ 카드 그룹 */
+  padding-top: 54px; /* 프레임 상단 상태바 영역 */
 }
 
 /* 헤더 "< 뒤로가기"는 공용 BackButton 컴포넌트(components/BackButton)로 분리됨. */
 
-/* 콘텐츠: 카드(상단) + 하단섹션. flex:1로 세로 공간을 채우고,
-   하단섹션을 margin-top:auto로 밀어 카드↔섹션 여백을 가변화(기기 높이 대응).
-   874 기준 이 가변 여백 ≈ 65px로 Figma Frame45 gap과 일치.
-   gap 20px는 화면이 짧아 auto 여백이 0으로 줄 때도 카드↔문구 최소 간격을 보장한다. */
+/* 콘텐츠 (Figma Frame 45): 카드 ↔ 하단섹션 gap 65 (고정). */
 .bg__content {
-  flex: 1;
-  min-height: 0;
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px; /* 카드 ↔ 하단섹션(문구) 최소 여백 (auto와 병행) */
-  margin-top: 30px;
+  gap: 65px; /* Frame 45: 카드 ↔ 하단섹션 */
 }
 
 /* 카드 프리뷰 내부 콘텐츠는 CardPreview 컴포넌트(components/CardPreview)로 분리됨. */
 
-/* ── 하단 섹션: 안내문 ↔ 컨트롤 gap 24 (Figma Frame 74) ──
-   margin-top:auto로 콘텐츠 하단에 고정 → 카드와의 간격이 가변 여백이 된다. */
+/* ── 하단 섹션 (Figma Frame 74): 안내문 ↔ 컨트롤 gap 24 ── */
 .bg__section {
-  margin-top: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -56,11 +51,11 @@
   flex-shrink: 0;
 }
 
-/* 컨트롤: (탭+스와치) ↔ 버튼 gap 44 (Figma Frame 47) */
+/* 컨트롤 (Figma Frame 47): (탭+스와치) ↔ 버튼 gap 44 */
 .bg__controls {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 44px;
   width: 100%;
 }
 

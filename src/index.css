@@ -31,14 +31,13 @@
   box-sizing: border-box;
 }
 
-/* 공용 모바일 화면 프레임 (Figma 402 폭 기준) — 모든 화면 루트가 공유한다.
+/* 공용 화면면(面) — 402×874 고정 프레임(.frame)을 꽉 채운다. 프레임이 통째로 스케일되므로
+   여기선 뷰포트 단위를 쓰지 않고 프레임 기준(100%)으로만 잡는다.
    화면별 레이아웃(flex/절대배치)은 각 화면 클래스에서 얹는다. */
 .screen {
   position: relative;
   width: 100%;
-  max-width: 402px;
-  min-height: 100dvh;
-  margin-inline: auto;
+  height: 100%;
   background: var(--surface);
   overflow: hidden;
 }
@@ -48,5 +47,5 @@ body {
 }
 
 #root {
-  min-height: 100svh;
+  height: 100svh;
 }

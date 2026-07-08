@@ -1,13 +1,12 @@
-/* 화면 #5 타인 답변 보기 — Figma iPhone 17 - 11 (402×874 프레임 기준).
-   위→아래: 상태바 영역 → 타이틀 → 카드 스택 → 안내문구 → 액션(다운로드/내 카드 보기).
-   세로 간격은 874 기준 고정 px로 앵커한다: 뭉치(타이틀~버튼)는 기기 높이와 무관하게 항상
-   동일한 모양을 유지하고, 남는 세로 여백은 버튼 아래로 쌓인다(top-anchored). 뷰포트보다
-   길어지면 `.screen`이 늘어나 문서가 스크롤되므로 짧은 화면에서도 버튼이 잘리지 않는다. */
+/* 화면 #5 타인 답변 보기 — Figma iPhone 17 - 11 (402×874 프레임, 통째 스케일되는 고정 캔버스).
+   17-11은 auto-layout이 아니라 절대배치 프레임 → Figma 절대 Y 좌표를 그대로 옮긴다:
+   타이틀(Frame51) top 166 → 타이틀↔카드 65 → 카드(Frame81) top 273 → 카드↔안내문 32 → 안내문↔버튼 32,
+   콘텐츠 그룹은 273~768(495)이고 하단 ~106px는 홈 인디케이터 여백. */
 .other {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 50px; /* 상태바 영역 여백 (Figma ~2.18% of 874) */
+  padding-top: 166px; /* Figma 타이틀 top 166 (상태바 아래 여백 포함) */
   padding-bottom: 10px;
 }
 
@@ -15,6 +14,7 @@
 .other__title {
   position: relative;
   z-index: 3; /* 발광(glow z1)·앞 카드(z2) 위로 — 문구는 항상 또렷하게 */
+  margin: 0; /* h1 기본 마진 제거 (Figma 좌표 정확히 맞추기) */
   font-size: 14px;
   font-weight: 600;
   line-height: 1.5;
@@ -29,7 +29,7 @@
   flex-direction: column;
   align-items: center;
   width: 100%;
-  margin-top: 48px; /* 타이틀 ↔ 카드 */
+  margin-top: 65px; /* 타이틀 ↔ 카드 (Figma) */
 }
 
 /* 카드 스택: 앞(검정 CardPreview)을 기준으로 뒤 카드가 위로 삐져나와 겹친다. */
@@ -77,8 +77,8 @@
 
 /* 안내문구: Pretendard 500 / 11 / 흐린 회색, 2줄 중앙 + 앞에 작은 스파클. */
 .other__note {
-  /* 카드 ↔ 안내문구 */
-  margin: 20px 0 20px 0;
+  /* 카드 ↔ 안내문구 32 / 안내문구 ↔ 버튼 32 (Figma Frame81 gap) */
+  margin: 32px 0 32px 0;
   font-size: 11px;
   font-weight: 500;
   line-height: 1.6;
@@ -98,7 +98,6 @@
   gap: 14px;
   width: 100%;
   padding: 0 20px;
-  margin-top: auto; /* 안내문구 ↔ 버튼 (고정 px) */
 }
 
 /* "내 카드 보기": Pretendard 500 / 13 / 흐린 잉크, 밑줄 텍스트 링크. */
