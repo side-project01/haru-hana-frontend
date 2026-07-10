@@ -10,18 +10,18 @@ import pat1 from '../../assets/img_1.jpg'
 import pat2 from '../../assets/img_2.jpg'
 import pat3 from '../../assets/img_3.jpg'
 
-/** 배경 선택(3번) 탭 (Figma: 컬러 / 그라데이션 / 패턴). */
-export const BG_TABS = ['컬러', '그라데이션', '패턴'] as const
+/** 배경 선택(3번) 탭 (Figma: 컬러 / 그라데이션 / 이미지). */
+export const BG_TABS = ['컬러', '그라데이션', '이미지'] as const
 export type BgTab = (typeof BG_TABS)[number]
 
 /** 배경 종류. 탭과 1:1로 매핑된다. */
-export type BgKind = 'color' | 'gradient' | 'pattern'
+export type BgKind = 'color' | 'gradient' | 'image'
 
 /** 탭 → 배경 종류 매핑. */
 export const TAB_KIND: Record<BgTab, BgKind> = {
   컬러: 'color',
   그라데이션: 'gradient',
-  패턴: 'pattern',
+  이미지: 'image',
 }
 
 /** 배경 스와치 한 칸. */
@@ -43,7 +43,7 @@ export interface Swatch {
 
 /**
  * 배경 스와치 목록 — Figma iPhone 17-19.
- * 컬러(2행 × 6열, 각 44×44 radius 4) + 그라데이션 7종 + 패턴(이미지) 3종. 스와치는 kind로
+ * 컬러(2행 × 6열, 각 44×44 radius 4) + 그라데이션 7종 + 이미지 3종. 스와치는 kind로
  * 탭에 자동 매핑돼 노출된다. 색상 hex는 Figma에서 직접 확인한 값.
  */
 export const SWATCHES: Swatch[] = [
@@ -70,10 +70,10 @@ export const SWATCHES: Swatch[] = [
   { id: 'grad-5', kind: 'gradient', label: '그라데이션 5', value: `url(${grad5}) center / cover no-repeat`, light: true },
   { id: 'grad-6', kind: 'gradient', label: '그라데이션 6', value: `url(${grad6}) center / cover no-repeat`, light: true },
   { id: 'grad-7', kind: 'gradient', label: '그라데이션 7', value: `url(${grad7}) center / cover no-repeat`, light: true },
-  // 패턴 (assets/img_1~3) — 이미지 밝기에 맞춰 카드 글자색(light) 명시.
-  { id: 'pattern-1', kind: 'pattern', label: '패턴 1', value: `url(${pat1}) center / cover no-repeat`, light: false }, // 어두운 사진 → 흰 글자
-  { id: 'pattern-2', kind: 'pattern', label: '패턴 2', value: `url(${pat2}) center / cover no-repeat`, light: true }, // 흰 종이 → 어두운 글자
-  { id: 'pattern-3', kind: 'pattern', label: '패턴 3', value: `url(${pat3}) center / cover no-repeat`, light: true }, // 밝은 크림톤 → 어두운 글자
+  // 이미지 (assets/img_1~3) — 이미지 밝기에 맞춰 카드 글자색(light) 명시.
+  { id: 'image-1', kind: 'image', label: '이미지 1', value: `url(${pat1}) center / cover no-repeat`, light: false }, // 어두운 사진 → 흰 글자
+  { id: 'image-2', kind: 'image', label: '이미지 2', value: `url(${pat2}) center / cover no-repeat`, light: true }, // 흰 종이 → 어두운 글자
+  { id: 'image-3', kind: 'image', label: '이미지 3', value: `url(${pat3}) center / cover no-repeat`, light: true }, // 밝은 크림톤 → 어두운 글자
 ]
 
 /** 렌더에 필요한 배경의 파생 정보 (스와치 id로부터 resolve). */

@@ -23,7 +23,7 @@ interface BackgroundSelectProps {
 
 /**
  * 화면 #3 배경 선택 (Figma: iPhone 17 - 19).
- * 카드 프리뷰 + 컬러/그라데이션/패턴 탭 + 배경 스와치 + "카드 만들기".
+ * 카드 프리뷰 + 컬러/그라데이션/이미지 탭 + 배경 스와치 + "카드 만들기".
  * (UI 전용 — 배경 선택/탭 전환은 로컬 상태로만 반영, 저장 로직 없음)
  */
 function BackgroundSelect({
@@ -43,7 +43,7 @@ function BackgroundSelect({
   const selectedBg = selectedSwatch.value
   // 배경이 밝은지: 스와치가 명시(light)하면 그 값, 아니면 hex에서 자동 판별. → 카드 글자 반전
   const selectedLight = selectedSwatch.light ?? isLight(selectedSwatch.value)
-  // 활성 탭에 해당하는 스와치만 노출. (그라데이션/패턴은 데이터 추가 시 자동 노출)
+  // 활성 탭에 해당하는 스와치만 노출. (그라데이션/이미지는 데이터 추가 시 자동 노출)
   const visible = SWATCHES.filter((s) => s.kind === TAB_KIND[tab])
 
   useEffect(() => () => window.clearTimeout(timerRef.current), [])
@@ -76,7 +76,7 @@ function BackgroundSelect({
 
           <div className="bg__controls">
             <div className="bg__picker">
-              {/* 탭: 컬러 / 그라데이션 / 패턴 */}
+              {/* 탭: 컬러 / 그라데이션 / 이미지 */}
               <div className="bg__tabs" role="tablist">
                 {BG_TABS.map((t) => (
                   <button
