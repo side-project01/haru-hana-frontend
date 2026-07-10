@@ -3,11 +3,11 @@
   align-items: center;
   gap: 4px;
 }
+/* 마크 형태·색(#141414)은 logo.svg 자체가 담고 있어 CSS 도형화 불필요 */
 .logo__mark {
+  display: block;
   width: 15px;
   height: 15px;
-  border-radius: 12px 12px 12px 2px;
-  background: var(--ink-strong);
 }
 .logo__text {
   font-size: 16px;
