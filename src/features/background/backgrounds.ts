@@ -6,6 +6,9 @@ import grad4 from '../../assets/gradation_4.png'
 import grad5 from '../../assets/gradation_5.png'
 import grad6 from '../../assets/gradation_6.png'
 import grad7 from '../../assets/gradation_7.png'
+import pat1 from '../../assets/img_1.jpg'
+import pat2 from '../../assets/img_2.jpg'
+import pat3 from '../../assets/img_3.jpg'
 
 /** 배경 선택(3번) 탭 (Figma: 컬러 / 그라데이션 / 패턴). */
 export const BG_TABS = ['컬러', '그라데이션', '패턴'] as const
@@ -40,8 +43,8 @@ export interface Swatch {
 
 /**
  * 배경 스와치 목록 — Figma iPhone 17-19.
- * 현재는 "컬러"만(2행 × 6열, 각 44×44 radius 4). 그라데이션/패턴은 데이터만 추가하면
- * 해당 탭에 자동 노출된다. 색상 hex는 Figma에서 직접 확인한 값.
+ * 컬러(2행 × 6열, 각 44×44 radius 4) + 그라데이션 7종 + 패턴(이미지) 3종. 스와치는 kind로
+ * 탭에 자동 매핑돼 노출된다. 색상 hex는 Figma에서 직접 확인한 값.
  */
 export const SWATCHES: Swatch[] = [
   // 1행 (진한 색)
@@ -67,6 +70,10 @@ export const SWATCHES: Swatch[] = [
   { id: 'grad-5', kind: 'gradient', label: '그라데이션 5', value: `url(${grad5}) center / cover no-repeat`, light: true },
   { id: 'grad-6', kind: 'gradient', label: '그라데이션 6', value: `url(${grad6}) center / cover no-repeat`, light: true },
   { id: 'grad-7', kind: 'gradient', label: '그라데이션 7', value: `url(${grad7}) center / cover no-repeat`, light: true },
+  // 패턴 (assets/img_1~3) — 이미지 밝기에 맞춰 카드 글자색(light) 명시.
+  { id: 'pattern-1', kind: 'pattern', label: '패턴 1', value: `url(${pat1}) center / cover no-repeat`, light: false }, // 어두운 사진 → 흰 글자
+  { id: 'pattern-2', kind: 'pattern', label: '패턴 2', value: `url(${pat2}) center / cover no-repeat`, light: true }, // 흰 종이 → 어두운 글자
+  { id: 'pattern-3', kind: 'pattern', label: '패턴 3', value: `url(${pat3}) center / cover no-repeat`, light: true }, // 밝은 크림톤 → 어두운 글자
 ]
 
 /** 렌더에 필요한 배경의 파생 정보 (스와치 id로부터 resolve). */
