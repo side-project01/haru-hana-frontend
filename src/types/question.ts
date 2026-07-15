@@ -27,3 +27,13 @@ export interface TodayAnswer {
   exists: boolean
   card?: AnswerCard
 }
+
+/**
+ * 같은 질문의 타인 답변 1건 (5번 화면). 서버가 본인 답변은 제외한다.
+ * background는 스와치 id(A안 bgValue) — 타인 답변 카드(앞 카드)의 배경으로,
+ * resolveBackground를 거쳐 렌더에 사용한다.
+ */
+export interface OtherAnswerData {
+  content: string
+  background: string
+}

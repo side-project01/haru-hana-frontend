@@ -1,7 +1,12 @@
 import { apiGet, apiPost } from './http'
 import { backgroundKind } from '../features/background/backgrounds'
 import { serviceDateToKey } from '../lib/date'
-import type { AnswerCard, TodayAnswer, TodayQuestion } from '../types/question'
+import type {
+  AnswerCard,
+  OtherAnswerData,
+  TodayAnswer,
+  TodayQuestion,
+} from '../types/question'
 
 /**
  * 서버 연동 API. 인증은 쿠키 전용(anon_id) — apiGet/apiPost가 `credentials: 'include'`로 자동 처리한다.
@@ -20,6 +25,13 @@ interface TodayQuestionResponse {
 interface MyAnswerResponse {
   id: number
   questionId: number
+  content: string
+  bgType: string
+  bgValue: string
+}
+
+/** `GET /answers/others` 응답(타인 답변 1건). 없으면 null. */
+interface OtherAnswerResponse {
   content: string
   bgType: string
   bgValue: string
@@ -49,6 +61,20 @@ export async function fetchTodayAnswer(): Promise<TodayAnswer> {
   const res = await apiGet<MyAnswerResponse | null>('/answers/me')
   if (!res) return { exists: false }
   return { exists: true, card: { answer: res.content, background: res.bgValue } }
+}
+
+/**
+ * 같은 질문의 타인 답변 무작위 1건 조회. `GET /answers/others?questionId=`
+ * 본인 답변은 서버가 제외하며, 0건이면 200 + null. (배경은 A안 bgValue=스와치 id)
+ */
+export async function fetchOtherAnswer(
+  questionId: number,
+): Promise<OtherAnswerData | null> {
+  const res = await apiGet<OtherAnswerResponse | null>(
+    `/answers/others?questionId=${questionId}`,
+  )
+  if (!res) return null
+  return { content: res.content, background: res.bgValue }
 }
 
 /**

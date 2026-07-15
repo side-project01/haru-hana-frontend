@@ -8,8 +8,8 @@ import cardHero from '../../assets/question/card-hero.png'
 import './TodayQuestion.css'
 
 interface TodayQuestionProps {
-  /** "답변하기" → 답변 작성(2번) 화면으로. 현재 질문 텍스트·날짜 키·질문 ID를 함께 넘긴다. */
-  onNext?: (question: string, date: string, questionId: number) => void
+  /** "답변하기" → 답변 작성(2번) 화면으로. 현재 질문 텍스트와 날짜 키를 함께 넘긴다. */
+  onNext?: (question: string, date: string) => void
 }
 
 /**
@@ -68,7 +68,7 @@ function TodayQuestion({ onNext }: TodayQuestionProps) {
       </div>
 
       <div className="today__footer">
-        <Button onClick={() => onNext?.(q.text, q.dateKey, q.questionId)}>답변하기</Button>
+        <Button onClick={() => onNext?.(q.text, q.dateKey)}>답변하기</Button>
       </div>
     </div>
   )

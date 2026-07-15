@@ -6,18 +6,22 @@ import './OtherAnswer.css'
 
 interface OtherAnswerProps {
   /** 같은 질문(카드에 재노출). */
-  question?: string
-  /** 타인의 답변. (줄바꿈 `\n` 반영) */
-  answer?: string
-  /** 카드 상단 날짜 라벨 (서버 기준 KST, Figma: 2026.12.05). */
-  date?: string
+  question: string
+  /** 카드 상단 날짜 라벨 (서버 기준 KST). */
+  date: string
+  /** 타인의 답변 텍스트 (앞 카드, 크게 표시). 줄바꿈 `\n` 반영. */
+  answer: string
   /**
-   * 뒤에 겹쳐 보이는 카드(= 내가 앞에서 만든 카드)의 배경. #3에서 고른 값이 주입된다.
-   * 텍스트 색은 CardPreview가 이 배경의 명암에 따라 자동 반전한다. 미지정 시 #4와 동일한 샘플 배경.
+   * 타인이 선택한 카드 배경 CSS 값 (앞 카드). A안: 타인 답변의 bgValue(스와치 id)를
+   * resolveBackground로 파생한 값이 주입된다. 미지정(로딩/0건) 시 CardPreview 기본 배경.
    */
   background?: string
-  /** 뒤 카드(내 카드) 배경이 밝은지(글자 반전). 이미지 배경의 밝기 판정을 전달받는다. */
+  /** 타인 배경이 밝은지(글자 반전). 이미지/그라데이션의 밝기 판정을 전달받는다. */
   onLight?: boolean
+  /** 뒤에 겹쳐 보이는 '내 카드'(장식용, aria-hidden)의 답변·배경·밝기. */
+  myAnswer: string
+  myBackground?: string
+  myLight?: boolean
   /**
    * "다른 사람 카드 다운받기" 클릭 시 호출(선택). 실제 저장은 카드 영역을 이미지로
    * 캡쳐하는 방식으로 추후 구현한다. (지금은 완료 토스트만 노출)
@@ -26,10 +30,6 @@ interface OtherAnswerProps {
   /** "내 카드 보기" — 내 카드 결과(#4)로 복귀. */
   onViewMyCard?: () => void
 }
-
-// 뒤 카드의 기본 배경. 내 카드 결과(#4 CardResult)의 샘플과 동일하게 맞춰,
-// 배경 미지정(standalone)일 때도 "내가 만든 카드"와 같은 톤으로 보이게 한다.
-const MY_CARD_BG = 'linear-gradient(155deg, #E9E1F4 0%, #9A6AC6 100%)'
 
 /** 다운로드 완료 토스트의 체크 아이콘 (Figma check-contained 20×20 — 흰 원 + 진한 체크). */
 function CheckCircleIcon() {
@@ -66,11 +66,14 @@ function SparkleIcon() {
  * "내 카드 보기" = 내 카드 결과(#4)로 복귀.
  */
 function OtherAnswer({
-  question = '무인도에 딱 한권의 책만 가져갈수 있다면 어떤 책인가요?',
-  answer = '불편한 편의점.\n혼자 있을수록 사람 냄새가\n그리울 것 같아서.',
-  date = '2026.12.05',
-  background = MY_CARD_BG,
+  question,
+  date,
+  answer,
+  background,
   onLight,
+  myAnswer,
+  myBackground,
+  myLight,
   onDownload,
   onViewMyCard,
 }: OtherAnswerProps) {
@@ -92,14 +95,14 @@ function OtherAnswer({
       </h1>
 
       <div className="other__content">
-        {/* 카드 스택: 뒤(밝은 라벤더, 흐림) + 앞(검정 CardPreview — 타인 답변) */}
+        {/* 카드 스택: 뒤(내 카드, 흐림) + 앞(타인 답변 — 타인이 고른 배경 반영) */}
         <div className="other__stack">
           <div className="other__card-behind" aria-hidden="true">
-            <CardPreview question={question} answer={answer} date={date} background={background} onLight={onLight} />
+            <CardPreview question={question} answer={myAnswer} date={date} background={myBackground} onLight={myLight} />
           </div>
           {/* 흰색 발광(eclipse): 뒤 카드 상단을 흰 배경으로 자연스럽게 흐리며 타이틀 주변을 밝힌다. */}
           <span className="other__glow" aria-hidden="true" />
-          <CardPreview question={question} answer={answer} date={date} />
+          <CardPreview question={question} answer={answer} date={date} background={background} onLight={onLight} />
         </div>
 
         {/* 내 답변도 노출될 수 있다는 안내 (Figma Frame 51) */}
