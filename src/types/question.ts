@@ -4,7 +4,8 @@ export type DateKey = string
 /** 오늘의 질문 (서버가 날짜별로 선정해 내려줌) */
 export interface TodayQuestion {
   dateKey: DateKey
-  questionId: string
+  /** 질문 ID. 답변 저장(`POST /answers`) 시 서버로 보낸다(정수). */
+  questionId: number
   text: string
 }
 

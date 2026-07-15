@@ -1,3 +1,5 @@
+import { apiPost } from './http'
+import { backgroundKind } from '../features/background/backgrounds'
 import { todayKeyKST } from '../lib/date'
 import type { AnswerCard, DateKey, TodayAnswer, TodayQuestion } from '../types/question'
 
@@ -48,7 +50,7 @@ export async function fetchTodayQuestion(): Promise<TodayQuestion> {
   await delay()
   return {
     dateKey: todayKeyKST(),
-    questionId: 'q-sample',
+    questionId: 1,
     text: '오늘 하루 가장 행복했던 순간은?',
   }
 }
@@ -68,15 +70,29 @@ export async function fetchTodayAnswer(): Promise<TodayAnswer> {
 }
 
 /**
- * 답변 + 배경 저장 ("카드 만들기" 시점). (사용자 식별은 anon_id 쿠키가 자동 처리)
- * 실제: `POST /answers` — 서버가 `(익명ID, 날짜)` 유니크로 1일 1회 강제(중복 시 409).
- * 백엔드 전이므로 오늘 날짜로 localStorage에 기록해, 재진입 시 완료 화면(오늘 답변함)이 뜨게 한다.
+ * 답변 + 배경 저장 ("카드 만들기" 시점). 사용자 식별은 anon_id 쿠키가 자동 처리한다.
+ * `POST /answers` — 서버가 `(익명ID, 날짜)` 유니크로 1일 1회를 강제한다.
+ *   - 오늘 이미 답변: 409
+ *   - 금칙어 / 오늘의 질문 아님: 400
+ * 실패 시 ApiError(status 포함)를 던지므로 호출부가 분기한다.
+ *
+ * 배경은 A안: bgValue에 **스와치 id**를 그대로 싣고, bgType(종류)은 카탈로그에서 파생한다.
+ * (컬러/그라데이션/이미지 일관 — 빌드마다 바뀌는 이미지 URL을 저장하지 않아 재배포에도 안 깨짐.)
+ *
+ * 저장 성공 후 오늘 기록을 localStorage에 캐시한다. 서버가 단일 진실이지만, 재진입 시드
+ * (getStoredAnswer)가 동기 접근이라 GET /answers/me 연동 전까지 이 캐시로 완료 카드를 복원한다.
  */
 export async function saveTodayAnswer(
+  questionId: number,
   question: string,
   card: AnswerCard,
 ): Promise<void> {
-  await delay()
+  await apiPost('/answers', {
+    questionId,
+    content: card.answer,
+    bgType: backgroundKind(card.background),
+    bgValue: card.background,
+  })
   try {
     const payload: StoredAnswer = { dateKey: todayKeyKST(), question, card }
     localStorage.setItem(ANSWER_STORE_KEY, JSON.stringify(payload))

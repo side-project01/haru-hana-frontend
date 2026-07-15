@@ -8,6 +8,7 @@ import CardResult from './features/result/CardResult'
 import OtherAnswer from './features/others/OtherAnswer'
 import type { Step } from './app/steps'
 import { getStoredAnswer, saveTodayAnswer } from './api/questions'
+import { ApiError } from './api/http'
 import './App.css'
 
 /** 디자인 프레임 고정 크기 (Figma iPhone 402×874). 모든 화면이 이 캔버스 위에 그려진다. */
@@ -26,6 +27,9 @@ function App() {
 
   // 카드에 노출할 데이터. 재진입 시 저장값으로 시드하고, 위저드 진행 중엔 각 단계에서 채운다.
   const [question, setQuestion] = useState(saved?.question ?? '')
+  // 답변 저장(POST /answers)에 필요한 오늘의 질문 ID. 위저드 진행 중 질문 화면에서 채워진다.
+  // (재진입은 저장을 다시 하지 않으므로 시드 불필요.)
+  const [questionId, setQuestionId] = useState(0)
   const [date, setDate] = useState(saved?.dateKey ?? '')
   const [answer, setAnswer] = useState(saved?.card.answer ?? '')
   // 배경의 정체성은 스와치 id 하나. CSS 값·밝기는 렌더 시점에 resolveBackground로 파생한다.
@@ -59,9 +63,10 @@ function App() {
 
         {step === 'today' && (
           <TodayQuestion
-            onNext={(q, d) => {
+            onNext={(q, d, qid) => {
               setQuestion(q)
               setDate(d)
+              setQuestionId(qid)
               setStep('answer')
             }}
           />
@@ -82,11 +87,27 @@ function App() {
             question={question || undefined}
             answer={answer || undefined}
             onBack={() => setStep('answer')}
-            onCreate={(bgId) => {
+            onCreate={async (bgId) => {
               setBackground(bgId)
-              // "카드 만들기" = 저장 시점. 방금 만든 결과(#4)는 완료 안내 없이 보여준다(completed=false).
-              void saveTodayAnswer(question, { answer, background: bgId })
-              setCompleted(false)
+              // "카드 만들기" = 저장 시점(POST /answers). 저장과 최소 로딩(1200ms)을 함께 기다려
+              // 저장이 빨라도 로딩 모달이 깜빡이지 않게 한 뒤 결과(#4)를 완료 안내 없이 보여준다.
+              // (실패는 Promise.all이 즉시 reject하므로 에러는 지연 없이 노출된다.)
+              const minLoading = new Promise((resolve) => setTimeout(resolve, 1200))
+              try {
+                await Promise.all([
+                  saveTodayAnswer(questionId, question, { answer, background: bgId }),
+                  minLoading,
+                ])
+                setCompleted(false)
+              } catch (err) {
+                // 다른 탭·기기에서 오늘 이미 답변(409) → 완료 카드로 안내.
+                // 그 외(400 금칙어·오늘의 질문 아님, 네트워크)는 되던져 BackgroundSelect가 에러를 노출한다.
+                if (err instanceof ApiError && err.status === 409) {
+                  setCompleted(true)
+                } else {
+                  throw err
+                }
+              }
               setStep('card')
             }}
           />

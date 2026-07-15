@@ -85,11 +85,27 @@ export interface ResolvedBackground {
 }
 
 /**
+ * id로 스와치를 찾는다. id가 없거나 카탈로그에서 사라졌으면 첫 스와치로 폴백한다.
+ * (파생 함수들이 공유하는 단일 조회·폴백 규칙 — 단일 진실은 카탈로그.)
+ */
+function findSwatch(id: string): Swatch {
+  return SWATCHES.find((sw) => sw.id === id) ?? SWATCHES[0]
+}
+
+/**
  * 저장/전달되는 **정체성은 스와치 id** 하나이고, 렌더 시점에 이 함수로 `{ value, light }`를 파생한다.
  * (해시가 바뀌는 이미지 URL이나 value/light 병렬 상태를 들고 다니지 않기 위함 — 단일 진실은 카탈로그.)
- * id가 없거나 카탈로그에서 사라졌으면 첫 스와치로 폴백한다.
  */
 export function resolveBackground(id: string): ResolvedBackground {
-  const s = SWATCHES.find((sw) => sw.id === id) ?? SWATCHES[0]
+  const s = findSwatch(id)
   return { value: s.value, light: s.light ?? isLight(s.value) }
+}
+
+/**
+ * 스와치 id로부터 배경 종류(kind)를 파생한다 — 저장 시 서버 `bgType`으로 보낸다.
+ * (A안: bgValue엔 스와치 id를 그대로 싣고, 종류는 카탈로그에서 조회해 붙인다.
+ *  컬러/그라데이션/이미지 모두 동일 규칙.)
+ */
+export function backgroundKind(id: string): BgKind {
+  return findSwatch(id).kind
 }

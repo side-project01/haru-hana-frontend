@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
 import CardPreview from '../../components/CardPreview/CardPreview'
 import Button from '../../components/Button/Button'
 import BackButton from '../../components/BackButton/BackButton'
 import LoadingModal from '../../components/LoadingModal/LoadingModal'
+import { ApiError } from '../../api/http'
 import { isLight } from '../../lib/color'
 import { BG_TABS, SWATCHES, TAB_KIND } from './backgrounds'
 import type { BgTab } from './backgrounds'
@@ -17,8 +18,11 @@ interface BackgroundSelectProps {
   date?: string
   /** 헤더 "뒤로가기" */
   onBack?: () => void
-  /** "카드 만들기" — 선택한 배경의 스와치 id를 결과(4번)로. (value/light는 id에서 파생) */
-  onCreate?: (backgroundId: string) => void
+  /**
+   * "카드 만들기" — 선택한 배경의 스와치 id를 넘긴다. (value/light는 id에서 파생)
+   * 저장(POST /answers)이 async라 Promise를 반환할 수 있으며, reject되면 로딩을 풀고 에러를 노출한다.
+   */
+  onCreate?: (backgroundId: string) => void | Promise<void>
 }
 
 /**
@@ -37,7 +41,8 @@ function BackgroundSelect({
   const [selected, setSelected] = useState(SWATCHES[0].id)
   // "카드 만들기" 후 저장/생성되는 동안 로딩 모달(iPhone 17-20)을 덮는다.
   const [creating, setCreating] = useState(false)
-  const timerRef = useRef<number | undefined>(undefined)
+  // 저장 실패(금칙어 400·네트워크 등) 시 CTA 위에 노출할 안내. 성공/재시도 시 초기화한다.
+  const [error, setError] = useState<string | null>(null)
 
   const selectedSwatch = SWATCHES.find((s) => s.id === selected) ?? SWATCHES[0]
   const selectedBg = selectedSwatch.value
@@ -46,13 +51,23 @@ function BackgroundSelect({
   // 활성 탭에 해당하는 스와치만 노출. (그라데이션/이미지는 데이터 추가 시 자동 노출)
   const visible = SWATCHES.filter((s) => s.kind === TAB_KIND[tab])
 
-  useEffect(() => () => window.clearTimeout(timerRef.current), [])
-
-  // UI 전용: 로딩 모달을 잠깐 보여준 뒤 결과(4번)로 이동. (실제 저장 로직은 추후 연동)
-  const handleCreate = () => {
+  // "카드 만들기": 저장(onCreate) 동안 로딩 모달을 덮는다. 성공하면 상위(App)가 결과(#4)로
+  // 전환해 이 화면이 언마운트되고, 실패하면 로딩을 풀고 원인별 안내를 노출한다.
+  // (최소 로딩 노출 시간은 전환을 소유한 App이 저장과 병렬로 gate한다. 409 중복도 App이 완료 카드로 흡수.)
+  const handleCreate = async () => {
     if (creating) return
+    setError(null)
     setCreating(true)
-    timerRef.current = window.setTimeout(() => onCreate?.(selected), 1200)
+    try {
+      await onCreate?.(selected)
+    } catch (err) {
+      setCreating(false)
+      setError(
+        err instanceof ApiError && err.status === 400
+          ? '사용할 수 없는 표현이 있어요. 답변을 다시 확인해주세요.'
+          : '저장에 실패했어요. 잠시 후 다시 시도해주세요.',
+      )
+    }
   }
 
   return (
@@ -129,7 +144,12 @@ function BackgroundSelect({
             </div>
 
             <div className="bg__cta">
-              <Button onClick={handleCreate}>카드 만들기</Button>
+              {error && (
+                <p className="bg__error" role="alert">
+                  {error}
+                </p>
+              )}
+              <Button onClick={() => void handleCreate()}>카드 만들기</Button>
             </div>
           </div>
         </div>

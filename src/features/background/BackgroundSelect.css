@@ -145,3 +145,13 @@
   padding: 0 20px;
   width: 100%;
 }
+
+/* 저장 실패 안내: CTA 위, 중앙, 경고색 (Pretendard 500 / 13) */
+.bg__error {
+  margin: 0 0 10px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--danger, #d92d20);
+}
