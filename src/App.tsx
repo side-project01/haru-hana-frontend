@@ -1,4 +1,5 @@
-import { useLayoutEffect, useRef, useState, type CSSProperties } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
 import Onboarding from './features/onboarding/Onboarding'
 import TodayQuestion from './features/question/TodayQuestion'
 import AnswerWrite from './features/answer/AnswerWrite'
@@ -165,6 +166,21 @@ function App() {
   const todayQuestion = useTodayQuestion()
   const myAnswer = useTodayAnswer()
   const booting = todayQuestion.isPending || myAnswer.isPending
+  const dateKey = todayQuestion.data?.dateKey
+
+  // 일 넘어감(rollover) 자동 반영: 서버 dateKey로 다음 KST 자정(새 질문 시각)을 잡아 그 시각에
+  // 모든 쿼리를 리셋한다. resetQueries가 booting을 다시 켜 → 로딩 후 Wizard가 새 날 시드로 재마운트
+  // (수동 새로고침 불필요). 질문/내답변이 함께 pending→success를 거치므로 데이터 불일치 창이 없다.
+  // 목표가 이미 지났으면(경계·클라 시계 앞섬) 60초 간격으로 재확인해 서버가 실제 롤오버될 때까지 기다린다.
+  const queryClient = useQueryClient()
+  useEffect(() => {
+    if (!dateKey) return
+    const target = nextKstMidnightAfter(dateKey).getTime()
+    const now = Date.now()
+    const delay = target > now ? target - now + 1000 : 60_000
+    const id = window.setTimeout(() => void queryClient.resetQueries(), delay)
+    return () => window.clearTimeout(id)
+  }, [dateKey, queryClient])
 
   // 레터박스 스케일: 402×874 고정 프레임을 실제 가용 영역(.app content-box)에 맞춰 균일 축소한다.
   // 짧은 모바일 뷰포트·데스크톱 공통 — 스크롤/리플로우 없이 디자인 비율 그대로 유지.
