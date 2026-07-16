@@ -157,7 +157,7 @@ function CardResult({
     if (busy || !cardRef.current) return
     setBusy(true)
     try {
-      const result = await captureAndSaveCard(cardRef.current, `daily-card-${date}.png`)
+      const result = await captureAndSaveCard(cardRef.current, `haru-hana-${date}.png`)
       // 사용자가 공유 시트를 닫은 경우(cancelled)는 토스트를 띄우지 않는다.
       if (result === 'cancelled') return
       onDownload?.()
