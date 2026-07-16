@@ -3,6 +3,7 @@ import CardPreview from '../../components/CardPreview/CardPreview'
 import Button from '../../components/Button/Button'
 import BackButton from '../../components/BackButton/BackButton'
 import LoadingModal from '../../components/LoadingModal/LoadingModal'
+import ErrorModal from '../../components/ErrorModal/ErrorModal'
 import { ApiError } from '../../api/http'
 import { isLight } from '../../lib/color'
 import { BG_TABS, SWATCHES, TAB_KIND } from './backgrounds'
@@ -42,7 +43,7 @@ function BackgroundSelect({
   const [selected, setSelected] = useState(SWATCHES[0].id)
   // "카드 만들기" 후 저장/생성되는 동안 로딩 모달(iPhone 17-20)을 덮는다.
   const [creating, setCreating] = useState(false)
-  // 저장 실패(금칙어 400·네트워크 등) 시 CTA 위에 노출할 안내. 성공/재시도 시 초기화한다.
+  // 저장 실패(금칙어 400·네트워크 등) 시 실패 모달(iPhone 17-25)에 띄울 안내 문구. 닫으면 초기화한다.
   const [error, setError] = useState<string | null>(null)
 
   const selectedSwatch = SWATCHES.find((s) => s.id === selected) ?? SWATCHES[0]
@@ -66,7 +67,7 @@ function BackgroundSelect({
       setError(
         err instanceof ApiError && err.status === 400
           ? '사용할 수 없는 표현이 있어요. 답변을 다시 확인해주세요.'
-          : '저장에 실패했어요. 잠시 후 다시 시도해주세요.',
+          : '다시 시도해 주세요',
       )
     }
   }
@@ -145,11 +146,6 @@ function BackgroundSelect({
             </div>
 
             <div className="bg__cta">
-              {error && (
-                <p className="bg__error" role="alert">
-                  {error}
-                </p>
-              )}
               <Button onClick={() => void handleCreate()}>카드 만들기</Button>
             </div>
           </div>
@@ -157,6 +153,14 @@ function BackgroundSelect({
       </div>
 
       {creating && <LoadingModal />}
+      {/* 저장 실패 시 실패 모달(iPhone 17-25). "뒤로가기"/백드롭으로 닫으면 다시 시도할 수 있다. */}
+      {error && (
+        <ErrorModal
+          description={error}
+          onAction={() => setError(null)}
+          onClose={() => setError(null)}
+        />
+      )}
     </div>
   )
 }

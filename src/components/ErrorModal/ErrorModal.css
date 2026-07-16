@@ -1,0 +1,95 @@
+/* 오버레이 — 화면(.screen 프레임) 전체를 덮고 카드를 중앙 정렬. 배경 흰색 60% (Figma) */
+.error-modal {
+  position: absolute;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(255, 255, 255, 0.6);
+  animation: error-modal-fade 0.2s ease-out;
+}
+
+/* 중앙 카드 — Figma: 240px / radius 12 / padding 20 / gap 12 / shadow 0 12 32 (10.2%) */
+.error-modal__card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 240px;
+  padding: 20px;
+  border-radius: 12px;
+  background: var(--surface);
+  box-shadow: 0 12px 32px 0 rgba(0, 0, 0, 0.102);
+}
+
+/* 아이콘 + 텍스트 묶음 — Figma gap 12 */
+.error-modal__body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+/* 경고 아이콘 — 24×24 alert-circle */
+.error-modal__icon {
+  display: block;
+  width: 24px;
+  height: 24px;
+}
+.error-modal__icon svg {
+  display: block;
+}
+
+/* 텍스트 묶음 — Figma gap 8 */
+.error-modal__text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+
+/* 타이틀 — Pretendard SemiBold 18 / lh 100% / #191919 */
+.error-modal__title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--ink);
+}
+
+/* 보조 문구 — Pretendard Regular 12 / lh 100% / #B0B0B0 */
+.error-modal__desc {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1;
+  color: var(--muted);
+}
+
+/* 버튼 — Figma: 검정 배경 / radius 4 / padding 8 12 / 폭 채움. 라벨 Medium 12 흰색 */
+.error-modal__button {
+  width: 100%;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  background: #000000;
+  color: var(--on-ink);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1;
+  cursor: pointer;
+}
+
+@keyframes error-modal-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
